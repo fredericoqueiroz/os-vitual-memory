@@ -4,6 +4,7 @@
 #include <stdio.h> 
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 #include "pagetable.h"
 
 #define NUM_ARGS 4
@@ -20,5 +21,9 @@ unsigned get_evicted_page(pgtbl* page_table, int replacement_alg);
 
 // replacement algorithms 
 unsigned random_alg(pgtbl* page_table);
+
+unsigned fifo_alg(pgtbl* page_table);
+
+unsigned sc_alg(pgtbl* page_table);
 
 #endif

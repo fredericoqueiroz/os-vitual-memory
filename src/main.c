@@ -55,7 +55,7 @@ int main(int argc, char *argv[]){
     //start simulation
     while(!feof(file)){
 
-        if(fscanf(file, "%x %c", &addr, &rw) != 2){}
+        if(fscanf(file, "%x %c", &addr, &rw)){}
 
         addr_page = get_addr_page(addr, page_shift);
 

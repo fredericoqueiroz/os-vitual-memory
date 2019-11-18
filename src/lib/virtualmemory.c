@@ -33,7 +33,7 @@ unsigned get_evicted_page(pgtbl* page_table, int replacement_alg){
     if(replacement_alg == SC)
         return random_alg(page_table);
     if(replacement_alg == FIFO)
-        return random_alg(page_table);
+        return fifo_alg(page_table);
     if(replacement_alg == RANDOM)
         return random_alg(page_table);
     else
@@ -52,5 +52,19 @@ unsigned random_alg(pgtbl* page_table){
 }
 
 unsigned fifo_alg(pgtbl* page_table){
-    
+    unsigned evicted_page = 0;
+    double diference, max_diference = 0.0;
+
+    time_t actual_time = time(NULL);
+    //time(&actual_time);
+
+    for(int i=0; i<PGTBL_SIZE; i++){
+        diference = difftime(actual_time, page_table[i].stamp);
+        if(diference > max_diference && page_table[i].valid){
+            evicted_page = i;
+            max_diference = diference;
+        }
+    }
+
+    return evicted_page;
 }
