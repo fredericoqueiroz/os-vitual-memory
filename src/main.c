@@ -2,23 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "lib/pagetable.h"
-
-#define NUM_ARGS 4
-
-enum ALG{LRU, SC, FIFO, RANDOM};
-
-int get_replacement_algorithm(char *name){
-    if(strcmp("lru", name) == 0)
-        return LRU;
-    if(strcmp("2a", name) == 0)
-        return SC;
-    if(strcmp("fifo", name) == 0 )
-        return FIFO;
-    if(strcmp("random", name) == 0 )
-        return RANDOM;
-    else
-        return -1;
-}
+#include "lib/virtualmemory.h"
 
 
 int main(int argc, char *argv[]){
@@ -31,8 +15,8 @@ int main(int argc, char *argv[]){
     }
 
     // get the chosen page replacement algorithm
-    int alg = get_replacement_algorithm(argv[1]);
-    if(alg == -1){
+    int replacement_alg = get_replacement_algorithm(argv[1]);
+    if(replacement_alg == -1){
         fprintf(stderr, "Algoritmo de substituicao nao reconhecido.\nDeve ser um dos seguintes: lru, 2a, fifo, random.\n");
         exit(1);
     }
@@ -56,23 +40,56 @@ int main(int argc, char *argv[]){
     }
 
     // o tamanho da tabela de pagina eh a quantidade de frames da memoria fisica
-    pgtbl *page_table = init_pagetable(frame_number);
+    pgtbl *page_table = init_pagetable(PGTBL_SIZE);
 
+    int dirty_count = 0;
+    int page_faults = 0;
+    int free_frames = frame_number;
+
+    unsigned page_shift = get_page_shift(page_size);
+    unsigned evicted_page;
+    unsigned addr_page;
     unsigned addr;
     char rw;
+
     //start simulation
     while(!feof(file)){
+
         fscanf(file, "%x %c", &addr, &rw);
 
-        //addr_page = localiza pagina que contem o endereco;
+        addr_page = get_addr_page(addr, page_shift);
 
-        //verifica se a pagina ja esta na memoria
-            // se sim, continue
-            // se nao, page fault
-                //localiza pagina para ser a vitima de acordo com algoritmo de page replacement
-                //retira a vitima e coloca a nova pagina no lugar
+        if(rw == 'W')
+            page_table[addr_page].dirty = 1;
+
+        if(page_table[addr_page].valid)
+            continue;
+
+        page_faults++;
+
+        if(free_frames){
+            page_table[addr_page].valid = 1;
+            page_table[addr_page].ref = 1;
+            page_table[addr_page].stamp = time(NULL);
+            free_frames--;
+            continue;
+        }
+        
+        evicted_page = get_evicted_page(page_table, PGTBL_SIZE, replacement_alg);
+
+        if(page_table[addr_page].dirty)
+            dirty_count++;
+
+        page_table[evicted_page].valid = 0;
+        page_table[evicted_page].dirty = 0;
+
+        page_table[addr_page].valid = 1;
+        page_table[addr_page].ref = 1;
+        page_table[addr_page].stamp = time(NULL);
     }
 
+    printf("Paginas lidas: %d\n", page_faults);
+    printf("Paginas escritas: %d\n", dirty_count);
 
     free(page_table);
     fclose(file);
