@@ -16,9 +16,9 @@ unsigned get_page_shift(unsigned int page_size);
 
 unsigned get_addr_page(unsigned addr, unsigned page_shift);
 
-unsigned get_evicted_page(pgtbl* page_table, unsigned int pgtbl_size, int replacement_alg);
+unsigned get_evicted_page(pgtbl* page_table, int replacement_alg);
 
 // replacement algorithms 
-unsigned random_alg(pgtbl* page_table, unsigned int pgtbl_size);
+unsigned random_alg(pgtbl* page_table);
 
 #endif

@@ -27,26 +27,30 @@ unsigned get_addr_page(unsigned addr, unsigned page_shift){
     return addr >> page_shift;
 }
 
-unsigned get_evicted_page(pgtbl* page_table, unsigned int pgtbl_size, int replacement_alg){
+unsigned get_evicted_page(pgtbl* page_table, int replacement_alg){
     if(replacement_alg == LRU)
-        return random_alg(page_table, pgtbl_size);
+        return random_alg(page_table);
     if(replacement_alg == SC)
-        return random_alg(page_table, pgtbl_size);
+        return random_alg(page_table);
     if(replacement_alg == FIFO)
-        return random_alg(page_table, pgtbl_size);
+        return random_alg(page_table);
     if(replacement_alg == RANDOM)
-        return random_alg(page_table, pgtbl_size);
+        return random_alg(page_table);
     else
-        return random_alg(page_table, pgtbl_size);
+        return random_alg(page_table);
 }
 
-unsigned random_alg(pgtbl* page_table, unsigned int pgtbl_size){
+unsigned random_alg(pgtbl* page_table){
     unsigned evicted_page;
     srand(time(NULL));
 
     while(1){
-        evicted_page = (random() % pgtbl_size);
+        evicted_page = (random() % PGTBL_SIZE);
         if(page_table[evicted_page].valid)
             return evicted_page;
     }
+}
+
+unsigned fifo_alg(pgtbl* page_table){
+    
 }

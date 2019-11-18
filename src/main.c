@@ -39,7 +39,7 @@ int main(int argc, char *argv[]){
         exit(1);
     }
 
-    // o tamanho da tabela de pagina eh a quantidade de frames da memoria fisica
+    // initialize page table
     pgtbl *page_table = init_pagetable(PGTBL_SIZE);
 
     int dirty_count = 0;
@@ -55,7 +55,7 @@ int main(int argc, char *argv[]){
     //start simulation
     while(!feof(file)){
 
-        fscanf(file, "%x %c", &addr, &rw);
+        if(fscanf(file, "%x %c", &addr, &rw) != 2){}
 
         addr_page = get_addr_page(addr, page_shift);
 
@@ -68,14 +68,15 @@ int main(int argc, char *argv[]){
         page_faults++;
 
         if(free_frames){
+            //printf("EMPRTY FRAMES\n");
             page_table[addr_page].valid = 1;
             page_table[addr_page].ref = 1;
             page_table[addr_page].stamp = time(NULL);
             free_frames--;
             continue;
         }
-        
-        evicted_page = get_evicted_page(page_table, PGTBL_SIZE, replacement_alg);
+
+        evicted_page = get_evicted_page(page_table, replacement_alg);
 
         if(page_table[addr_page].dirty)
             dirty_count++;

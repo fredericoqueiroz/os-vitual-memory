@@ -17,9 +17,10 @@ pgtbl* init_pagetable(int pgtbl_size){
     return page_table;
 }
 
+//for debugging
 void print_pagetable(pgtbl *page_table, int pgtbl_size){
     for(int i=0; i<pgtbl_size; i++){
-        printf("%d %d %d %d\n", page_table[i].valid, page_table[i].ref, page_table[i].dirty, page_table[i].frame);
+        printf("%d %d %d\n", page_table[i].valid, page_table[i].ref, page_table[i].dirty);
     }
 }
 

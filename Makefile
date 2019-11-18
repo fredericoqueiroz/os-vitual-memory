@@ -7,7 +7,7 @@ SRC_DIR=./src
 SRC=$(wildcard $(SRC_DIR)/**/*.c)
 CC=gcc
 
-CFLAGS = -Wall -Wextra -g
+CFLAGS = -Wall -Wextra -O3
 
 .PHONY: all
 
