@@ -27,3 +27,4 @@ run:
 
 clean:
 	rm -f $(OBJ_DIR)/* $(BIN_DIR)/$(BIN_NAME)
+	rmdir $(OBJ_DIR)
