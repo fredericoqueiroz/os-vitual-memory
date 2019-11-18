@@ -24,6 +24,8 @@ unsigned random_alg(pgtbl* page_table);
 
 unsigned fifo_alg(pgtbl* page_table);
 
+unsigned lru_alg(pgtbl* page_table);
+
 unsigned sc_alg(pgtbl* page_table);
 
 #endif

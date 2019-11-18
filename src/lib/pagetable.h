@@ -13,7 +13,8 @@ typedef struct {
     int valid;          // page valid, set if in memory
     int ref;            // page reference, set if page has been referenced
     int dirty;          // dirty 'bit', set if modified 
-    time_t stamp; // last time the page has been referenced
+    time_t stamp;       // last time the page has been referenced
+    time_t newest_page;
 } pgtbl;
 
 pgtbl* init_pagetable(int pgtbl_size);

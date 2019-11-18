@@ -29,7 +29,7 @@ unsigned get_addr_page(unsigned addr, unsigned page_shift){
 
 unsigned get_evicted_page(pgtbl* page_table, int replacement_alg){
     if(replacement_alg == LRU)
-        return random_alg(page_table);
+        return lru_alg(page_table);
     if(replacement_alg == SC)
         return random_alg(page_table);
     if(replacement_alg == FIFO)
@@ -67,4 +67,21 @@ unsigned fifo_alg(pgtbl* page_table){
     }
 
     return evicted_page;
+}
+
+unsigned lru_alg(pgtbl* page_table) {
+
+    int min_i = -1;
+    for (int i = 0; i < PGTBL_SIZE; i++)
+    {
+        if (page_table[i].valid)
+        {
+            if (min_i == -1 || difftime(page_table[min_i].newest_page, page_table[i].newest_page) > 0)
+            {
+                min_i = i;
+            }
+        }
+    }
+    return min_i;
+
 }

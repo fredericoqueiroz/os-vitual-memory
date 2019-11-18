@@ -4,15 +4,14 @@ pgtbl* init_pagetable(int pgtbl_size){
 
     pgtbl *page_table = malloc(pgtbl_size * sizeof(pgtbl));
 
-    memset(page_table, 0, pgtbl_size * sizeof(pgtbl));
+    //memset(page_table, 0, pgtbl_size * sizeof(pgtbl));
 
-    /* for(int i=0; i<pgtbl_size; i++){
+    for(int i=0; i<pgtbl_size; i++){
         page_table[i].valid = 0;
         page_table[i].ref = 0;
         page_table[i].dirty = 0;
-        page_table[i].frame = 0;
         page_table[i].stamp = 0;
-    } */
+    }
 
     return page_table;
 }

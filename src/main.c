@@ -62,6 +62,8 @@ int main(int argc, char *argv[]){
         if(rw == 'W')
             page_table[addr_page].dirty = 1;
 
+        page_table[addr_page].newest_page = time(NULL);
+
         if(page_table[addr_page].valid)
             continue;
 
