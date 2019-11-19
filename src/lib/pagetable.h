@@ -15,7 +15,7 @@ typedef struct {
     int dirty;          // dirty 'bit', set if modified 
     int second_chance;  // if zero, already recieved second chance
     time_t stamp;       // last time the page has been referenced
-    time_t newest_page;
+    time_t last_recently;
 } pgtbl;
 
 pgtbl* init_pagetable(int pgtbl_size);

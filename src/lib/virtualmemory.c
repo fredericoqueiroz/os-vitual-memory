@@ -70,24 +70,24 @@ unsigned fifo_alg(pgtbl* page_table){
 
 unsigned lru_alg(pgtbl* page_table) {
 
-    int min_i = -1;
+    int evicted_page = -1;
     for (int i = 0; i < PGTBL_SIZE; i++)
     {
         if (page_table[i].valid)
         {
-            if (min_i == -1 || difftime(page_table[min_i].newest_page, page_table[i].newest_page) > 0)
+            if (evicted_page == -1 || difftime(page_table[evicted_page].last_recently, page_table[i].last_recently) > 0)
             {
-                min_i = i;
+                evicted_page = i;
             }
         }
     }
-    return min_i;
+    return evicted_page;
 }
 
 unsigned sc_alg(pgtbl* page_table)
 {
-    int victm_page = 0, i = 0, selected_page = 0;
-    time_t time_now = time(NULL);
+    int evicted_page = 0, i = 0, selected_page = 0;
+    time_t actual_time = time(NULL);
     double diff = 0.0;
 
     for (i = 0; i < PGTBL_SIZE; i++)
@@ -99,16 +99,16 @@ unsigned sc_alg(pgtbl* page_table)
     { //gives second chance
         for (i = 0; i < PGTBL_SIZE; i++)
         { //finds page
-            if (page_table[i].valid && !page_table[i].second_chance && difftime(time_now, page_table[i].stamp) > diff)
+            if (page_table[i].valid && !page_table[i].second_chance && difftime(actual_time, page_table[i].stamp) > diff)
             {
                 selected_page = i;
-                diff = difftime(time_now, page_table[i].stamp);
+                diff = difftime(actual_time, page_table[i].stamp);
             }
         }
 
         if (page_table[selected_page].ref == 0)
         {
-            victm_page = selected_page;
+            evicted_page = selected_page;
             break;
         }
         else
@@ -117,5 +117,5 @@ unsigned sc_alg(pgtbl* page_table)
             page_table[selected_page].second_chance = 1;
         }
     }
-    return victm_page;
+    return evicted_page;
 }
