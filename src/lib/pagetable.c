@@ -8,9 +8,8 @@ pgtbl* init_pagetable(int pgtbl_size){
 
     for(int i=0; i<pgtbl_size; i++){
         page_table[i].valid = 0;
-        page_table[i].ref = 0;
+        page_table[i].ref = 1;
         page_table[i].dirty = 0;
-        page_table[i].stamp = 0;
     }
 
     return page_table;

@@ -31,13 +31,13 @@ unsigned get_evicted_page(pgtbl* page_table, int replacement_alg){
     if(replacement_alg == LRU)
         return lru_alg(page_table);
     if(replacement_alg == SC)
-        return random_alg(page_table);
+        return sc_alg(page_table);
     if(replacement_alg == FIFO)
         return fifo_alg(page_table);
     if(replacement_alg == RANDOM)
         return random_alg(page_table);
     else
-        return random_alg(page_table);
+        return lru_alg(page_table);
 }
 
 unsigned random_alg(pgtbl* page_table){
@@ -65,7 +65,6 @@ unsigned fifo_alg(pgtbl* page_table){
             max_diference = diference;
         }
     }
-
     return evicted_page;
 }
 
@@ -83,5 +82,40 @@ unsigned lru_alg(pgtbl* page_table) {
         }
     }
     return min_i;
+}
 
+unsigned sc_alg(pgtbl* page_table)
+{
+    int victm_page = 0, i = 0, selected_page = 0;
+    time_t time_now = time(NULL);
+    double diff = 0.0;
+
+    for (i = 0; i < PGTBL_SIZE; i++)
+    {
+        page_table[i].second_chance = 0;
+    }
+
+    while (1)
+    { //gives second chance
+        for (i = 0; i < PGTBL_SIZE; i++)
+        { //finds page
+            if (page_table[i].valid && !page_table[i].second_chance && difftime(time_now, page_table[i].stamp) > diff)
+            {
+                selected_page = i;
+                diff = difftime(time_now, page_table[i].stamp);
+            }
+        }
+
+        if (page_table[selected_page].ref == 0)
+        {
+            victm_page = selected_page;
+            break;
+        }
+        else
+        {
+            page_table[selected_page].ref = 0;
+            page_table[selected_page].second_chance = 1;
+        }
+    }
+    return victm_page;
 }

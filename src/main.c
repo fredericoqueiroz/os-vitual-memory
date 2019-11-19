@@ -30,7 +30,7 @@ int main(int argc, char *argv[]){
     printf("Arquivo de entrada: %s\n", file_name);
     printf("Tamanho das paginas: %d KB\n", page_size);
     printf("Tamanho da memoria: %d KB\n", memory_size);
-    printf("Tecninca de reposicao: %s\n", argv[1]);
+    printf("Tecnica de reposicao: %s\n", argv[1]);
 
     // open file for reading
     FILE* file = fopen(file_name, "r");
